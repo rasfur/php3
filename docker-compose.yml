@@ -1,0 +1,31 @@
+lb:
+    image: nginx
+    volumes:
+      - 'nginx.conf.d:/etc/nginx/conf.d'
+      - '.:/var/www'
+    links: 
+      - php
+    ports:
+      - 80:80
+    restart: no
+
+
+phpdb: 
+    image: mysql:5.5 
+    volumes: 
+      - 'php/mysql-data:/var/lib/mysql' 
+    environment: 
+      MYSQL_ROOT_PASSWORD: php
+      MYSQL_DATABASE: php 
+      MYSQL_USER: php
+      MYSQL_PASSWORD: php
+    restart: no 
+ 
+php: 
+    image: rasfur/php:5.6-apache
+    command: apache2-foreground 
+    volumes: 
+      - 'php/www:/var/www/html' 
+    links: 
+      - phpdb:db 
+    restart: no 
