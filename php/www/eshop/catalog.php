@@ -1,12 +1,10 @@
 <?php
 	// подключение библиотек
 	require "inc/lib.inc.php";
-	require "inc/config.inc.php";
+	require "inc/db.inc.php";
 ?>
-<!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
 	<title>Каталог товаров</title>
 </head>
 <body>
@@ -21,25 +19,25 @@
 </tr>
 <?php
 $goods = selectAllItems();
-if($goods === false){
-	echo 'Произошла ошибка при выводе товаров!';
+if($goods === false) {
+	echo 'Произошла ошибка при выводе товаров';
 	exit;
 }
+
 if(!$goods){
-	echo 'На сегодня товаров нет!';
+	echo 'На сегодня товаров нету.';
 	exit;
 }
 
 foreach($goods as $item){
-	?>
-<tr>
-	<td><?= $item['title']?></td>
-	<td><?= $item['author']?></td>
-	<td><?= $item['pubyear']?></td>
-	<td><?= $item['price']?></td>
-	<td><a href="add2basket.php?id=<?=$item['id']?>">В корзину</a></td>
-
-</tr>
+?>
+	<tr>
+		<td><?= $item['title']?></td>
+		<td><?= $item['author']?></td>
+		<td><?= $item['pubyear']?></td>
+		<td><?= $item['price']?></td>
+		<td><a href="add2basket.php?id=<?=$item['id']?>">В корзину</a></td>
+	</tr>
 	<?php
 }
 ?>

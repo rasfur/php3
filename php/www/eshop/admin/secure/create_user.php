@@ -2,31 +2,40 @@
 require_once "session.inc.php";
 require_once "secure.inc.php";
 ?>
-<!DOCTYPE HTML>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
 <html>
 <head>
-	<title>Создание пользователя</title>
-	<meta charset="utf-8">
+	<title>Хеширование SHA-1</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 </head>
 
 <body>
-<h1>Создание пользователя</h1>
+<h1>Хеширование SHA-1</h1>
 <?
-$login = 'root';
-$password = '1234';
+$user = 'root';
+$string = '1234';
+$salt = '';
+$iterationCount = 100;
 $result = '';
 
+if (!$salt)
+	$salt = str_replace('=', '', base64_encode(md5(microtime() . '1FD37EAA5ED9425683326EA68DCD0E59')));
+
 if ($_SERVER['REQUEST_METHOD']=='POST'){
-	$login = $_POST['login'] ?: $login;
-	if(!userExists($login)){
-		$password = $_POST['password'] ?: $password;
-		$hash = getHash($password);
-		if(saveUser($login, $hash))
-			$result = 'Хеш '. $hash. ' успешно добавлен в файл';
+	$user = $_POST['user'] ?: $user;
+	if(!userExists($user)){
+		$string = $_POST['string'] ?: $string;
+		$salt = $_POST['salt'] ?: $salt;
+		$iterationCount = (int) $_POST['n'] ?: $iterationCount;
+		$result = getHash($string, $salt, $iterationCount);
+
+		if(saveHash($user, $result, $salt, $iterationCount))
+			$result = 'Хеш '. $result. ' успешно добавлен в файл';
 		else
-			$result = 'При записи хеша '. $hash. ' произошла ошибка';
+			$result = 'При записи хеша '. $result. ' произошла ошибка';
 	}else{
-		$result = "Пользователь $login уже существует. Выберите другое имя.";
+		$result = "Пользователь $user уже существует. Выберите другое имя.";
 	}
 }
 ?>
@@ -34,15 +43,23 @@ if ($_SERVER['REQUEST_METHOD']=='POST'){
 <form action="<?= $_SERVER['PHP_SELF']?>" method="post">
 	<div>
 		<label for="txtUser">Логин</label>
-		<input id="txtUser" type="text" name="login" value="<?= $login?>" style="width:40em"/>
+		<input id="txtUser" type="text" name="user" value="<?= $user?>" style="width:40em"/>
 	</div>
 	<div>
 		<label for="txtString">Пароль</label>
-		<input id="txtString" type="text" name="password" value="<?= $password?>" style="width:40em"/>
+		<input id="txtString" type="text" name="string" value="<?= $string?>" style="width:40em"/>
+	</div>
+	<div>
+		<label for="txtSalt">Соль</label>
+		<input id="txtSalt" type="text" name="salt" value="<?= $salt?>"  style="width:40em"/>
+	</div>
+	<div>
+		<label for="txtIterationCount">Число иттераций</label>
+		<input id="txtIterationCount" type="text" name="n" value="<?= $iterationCount?>"  style="width:4em"/>
 	</div>
 	<div>
 		<button type="submit">Создать</button>
-	</div>	
+	</div>
 </form>
 </body>
 </html>

@@ -1,10 +1,12 @@
 <?php
-	// ïîäêëþ÷åíèå áèáëèîòåê
-	require "inc/lib.inc.php";
-	require "inc/config.inc.php";
 
-  $id = $_GET['id'];
-  $quantity = 1;
-  add2Basket($id, $quantity);
-  header('Location: catalog.php');
-  exit;
+    // Ð¿Ð¾Ð´ÐºÐ»ÑŽÑ‡ÐµÐ½Ð¸Ðµ Ð±Ð¸Ð±Ð»Ð¸Ð¾Ñ‚ÐµÐº
+    require "inc/lib.inc.php";
+    require "inc/db.inc.php";
+
+    $id = clearInt($_GET['id']);
+    $quantity = 1;
+    add2Basket($id, $quantity);
+    header('Location: catalog.php');
+    exit;
+?>

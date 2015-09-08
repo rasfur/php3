@@ -1,11 +1,12 @@
 <?php
 	// подключение библиотек
 	require "inc/lib.inc.php";
-	require "inc/config.inc.php";
+	require "inc/db.inc.php";
 
-  $id = clearInt($_GET['id']);
+	$id = clearInt($_GET['id']);
   if($id){
     deleteItemFromBasket($id);
-    header("location: basket.php");
+    header("Location: basket.php");
     exit;
   }
+?>
